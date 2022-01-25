@@ -6,4 +6,11 @@
 #include "stdlib.h"
 
 #include "stdio.h"
+
+# include "utils/get_next_line.h"
+
+char	*get_path(char	**line);
+
+char	**ft_split(char *s, char c);
+char	*ft_substr(char	*s, unsigned int start, size_t	len);
 #endif
