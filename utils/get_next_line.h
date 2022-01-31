@@ -17,10 +17,10 @@
 # include <stdlib.h>
 # include <stdio.h>
 
-char	*ft_strjoin(char *s1, char *s2);
+char	*ft_strjoin2(char *s1, char *s2);
 int		ft_strchr(char	*s);
-size_t	ft_strle(const char	*s);
-char	*ft_substr(char	*s, unsigned int start, size_t	len);
+size_t	ft_strlen2(const char	*s);
+char	*ft_substr2(char	*s, unsigned int start, size_t	len);
 size_t	ft_strlcpy(char *dst, const char *src, size_t	dstsize);
 char	*ft_strdup(char *s1);
 char	*get_next_line(int fd);

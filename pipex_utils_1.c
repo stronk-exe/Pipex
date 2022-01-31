@@ -1,6 +1,6 @@
 #include "pipex.h"
 
-size_t	ft_strlen(const char	*s)
+int	ft_strlen(const char	*s)
 {
 	int	i;
 
@@ -10,11 +10,11 @@ size_t	ft_strlen(const char	*s)
 	return (i);
 }
 
-char	*ft_substr(char	*s, unsigned int start, size_t	len)
+char	*ft_substr(char	*s, int start, int	len)
 {
 	char			*tab;
-	unsigned int	i;
-	unsigned int	j;
+	int	i;
+	int	j;
 
 	tab = NULL;
 	if (s == 0)
@@ -46,6 +46,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	i = 0;
 	j = 0;
 	t = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 2));
+	if (!t)
+		return (NULL);
 	while (s1[i] != '\0')
 	{
 		t[i] = s1[i];

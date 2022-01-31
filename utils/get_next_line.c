@@ -20,7 +20,7 @@ char	*get_chyata(char *line)
 	i = 0;
 	while (line[i] != '\n' && line[i] != '\0')
 		i++;
-	chyata = ft_substr(line, i + 1, ft_strlen(line));
+	chyata = ft_substr2(line, i + 1, ft_strlen2(line));
 	free(line);
 	line = NULL;
 	return (chyata);
@@ -40,7 +40,7 @@ char	*get_line(char	**line)
 	}
 	while (line[0][i] != '\n' && line[0][i] != '\0')
 		i++;
-	temp = ft_substr(*line, 0, i + 1);
+	temp = ft_substr2(*line, 0, i + 1);
 	return (temp);
 }
 
@@ -66,7 +66,7 @@ char	*read_line(int fd, char *line)
 			return (NULL);
 		}
 		buffer[n] = '\0';
-		line = ft_strjoin(line, buffer);
+		line = ft_strjoin2(line, buffer);
 	}
 	free(buffer);
 	return (line);
@@ -86,10 +86,5 @@ char	*get_next_line(int fd)
 	if (buffer == NULL)
 		return (NULL);
 	line = get_chyata(line);
-	if (check_line(line))
 		return (buffer);
-	else
-		get_next_line(fd);
 }
-
-
