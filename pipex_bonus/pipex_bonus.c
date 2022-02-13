@@ -6,7 +6,7 @@
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 21:18:04 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/12 18:55:26 by ael-asri         ###   ########.fr       */
+/*   Updated: 2022/02/13 06:39:48 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,52 +144,51 @@ int	main(int ac, char **av, char **envp)
 	return (0);
 }
 */
-int	h_doc(char **av)
-{
-	if (!ft_strncmp("here_doc", av[2], 8))
-		return (1);
-	else
-		return (0);
-}
-
+/*
 void	creat_pipes(int *t, int n)
 {
 	int	i;
 
 	i = 0;
-	printf("n %d\n", n);
+//	printf("n %d\n", n);
 	while (i < n)
 	{
 		if (pipe((t + 2 * i)) < 0)
 			exit(1);
-		for(int k=0;k<n;k++)
-			printf("t[%d] %d\n", k, t[k]);
+	//	for(int k=0;k<n;k++)
+	//		printf("t[%d] %d\n", k, t[k]);
 		i++;
 	}
 }
-
-void	first_child(char **av, int *t, int n, int infile, char **path, char **envp)
+*/
+void	first_child(char **av, int infile, char **path, char **envp)
 {
 	pid_t	pid;
 	char	**cmd;
 	char	*s;
 	int		i;
-n=0;
+	int		fd[2];
+
 	i = 0;
+	if (pipe(fd) < 0)
+		exit(1);
 	pid = fork();
 	if (pid < 0)
 	{
 		perror("Error");
 		exit(0);
 	}
-	else if (pid == 0)
+	if (pid == 0)
 	{
-		printf("av %s\n", av[2]);
-		dup2(t[i], 1);
+	//	printf("av %s\n", av[2]);
+		dup2(fd[1], 1);
 		dup2(infile, 0);
-		printf("s %s\n", av[2]);
+		close(fd[0]);
+	//	printf("s %s\n", av[2]);
 	//	close(t[i]);
 		///////////////////////////////
+		printf("hiiiii im in \n");
+		printf("av %s\n", av[2]);
 		cmd = ft_split(av[2], ' ');
 		if (!cmd)
 		{
@@ -198,7 +197,7 @@ n=0;
 		}
 		///////////////////////////////
 		s = get_new_path(path, cmd);
-		printf("s %s\n", av[2]);
+	//	printf("s %s\n", av[2]);
 		if (!s)
 		{
 			perror("Error");
@@ -211,17 +210,21 @@ n=0;
 			exit(0);
 		}
 	}
-	printf("----------first child\n");
+//	return (fd[0]);
+//	printf("----------first child\n");
 }
 
-void	last_child(char **av, int *t, int n, int outfile, char **path,char **envp)
+void	last_child(char **av, int n, int outfile, char **path,char **envp)
 {
 	pid_t	pid;
 	char	**cmd;
 	char	*s;
 	int		i;
+	int		fd[2];
 
 	i = 0;
+	if (pipe(fd) < 0)
+		exit(1);
 	pid = fork();
 	if (pid < 0)
 	{
@@ -230,10 +233,12 @@ void	last_child(char **av, int *t, int n, int outfile, char **path,char **envp)
 	}
 	else if (pid == 0)
 	{
-		dup2(t[i], 0);
+		dup2(fd[0], 0);
 		dup2(outfile, 1);
-		close(t[i]);
+	//	close(fd[1]);
 		///////////////////////////////
+		printf("hiiiii im in \n");
+		printf("last av %s\n", av[n+1]);
 		cmd = ft_split(av[n+1], ' ');
 		if (!cmd)
 		{
@@ -254,15 +259,18 @@ void	last_child(char **av, int *t, int n, int outfile, char **path,char **envp)
 			exit(0);
 		}
 	}
-	printf("---------last child\n");
+//	printf("---------last child\n");
 }
 
-void	regular_child(char **av, int *t, int i, char **path, char **envp)
+void	regular_child(char **av, int i, char **path, char **envp)
 {
 	pid_t	pid;
 	char	**cmd;
 	char	*s;
+	int		fd[2];
 
+//	dup2(fd0, 0);
+	pipe(fd);
 	pid = fork();
 	if (pid < 0)
 	{
@@ -271,14 +279,13 @@ void	regular_child(char **av, int *t, int i, char **path, char **envp)
 	}
 	else if (pid == 0)
 	{
-		i++;
-		dup2(t[i], 0);
-		dup2(t[i], 1);
+		dup2(fd[1], 1);
+		dup2(fd[0], 0);
 		///////////////////////////////
-		close(t[i]);
-		close(t[i]);
+	//	close(fd[0]);
 		///////////////////////////////
-		cmd = ft_split(av[i], ' ');
+		printf("hiiiii im in \n");
+		cmd = ft_split(av[i + 3], ' ');
 		if (!cmd)
 		{
 			perror("Error");
@@ -298,6 +305,7 @@ void	regular_child(char **av, int *t, int i, char **path, char **envp)
 			exit(0);
 		}
 	}
+//	return (fd[0]);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -306,11 +314,10 @@ int	main(int ac, char **av, char **envp)
 	int		outfile;
 	int		pipe_num;
 	int		cmd_num;
-	int		h_d;
 	int		i;
 	char 	*line;
 	char	**path;
-	int		*t;
+//	int		fd0;
 
 	if (ac >= 5)
 	{
@@ -322,11 +329,9 @@ int	main(int ac, char **av, char **envp)
 			exit(0);
 		}
 		i = 4;
-		h_d = h_doc(av);
-		printf("h_d %d\n", h_d);
-		cmd_num = ac - (h_d + 3);
+		cmd_num = ac - (3);
 		pipe_num = cmd_num - 1;
-		t = malloc(((sizeof(int) * pipe_num)));
+	//	pipes = malloc();
 		///////////////////////////////
 		line = get_path(envp);
 		if (!line)
@@ -334,24 +339,25 @@ int	main(int ac, char **av, char **envp)
 		path = ft_split(line, ':');
 		if (!path)
 			return (0);
-		printf("cmds %d\n", cmd_num);
-		printf("pipes %d\n", pipe_num);
-		creat_pipes(t, pipe_num);
-		printf("wttt\n");
+	//	printf("cmds %d\n", cmd_num);
+	//	printf("pipes %d\n", pipe_num);
+	//	creat_pipes(t, pipe_num);
 		///////////////////////////////
-		first_child(av, t, cmd_num, infile, path, envp);
+		first_child(av, infile, path, envp);
+	//	int fdout;
+	//	int	fd0;
 		///////////////////////////////
-		i = 0;
+		i = 0 ;
 		while (i < (cmd_num - 2))
 		{
-			regular_child(av, t, i, path, envp);
+			regular_child(av, i, path, envp);
+			printf("i %d\n", i);
 			i++;
 		}
 		///////////////////////////////
-		last_child(av, t, cmd_num, outfile, path, envp);
-		printf("wttt\n");
+		last_child(av, cmd_num, outfile, path, envp);
+	//	waitid();
 	}
 	else
 		write(2, "Error\n", 6);
-	
 }
