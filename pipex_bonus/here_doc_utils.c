@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_utils_bonus.c                                :+:      :+:    :+:   */
+/*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/12 13:52:46 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/14 16:39:23 by ael-asri         ###   ########.fr       */
+/*   Created: 2022/02/14 15:29:53 by ael-asri          #+#    #+#             */
+/*   Updated: 2022/02/14 15:41:44 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../pipex.h"
-/*
-int	ft_strncmp(char *s1, char *s2, int n)
-{
-	int	i;
 
-	if (n <= 0)
+#include "../pipex.h"
+#include "gnl/get_next_line.h"
+
+int check_here_doc(char **av)
+{
+	char	*s;
+	char	*limiter;
+	if (ft_strncmp(av[1], "here_doc", 8)
 	{
-		return (0);
-	}
-	i = 0;
-	while ((s1[i] || s2[i]) && i < n)
-	{
-		if (s1[i] > s2[i])
-			return (1);
-		else if (s1[i] < s2[i])
-			return (-1);
-		i++;
+		limiter = av[2];
+		s = get_next_line(0);
+		while (ft_strncmp(s, limiter, ft_strlen(limiter)))
+		{
+			do_smthing();
+			s = get_next_line(0);
+		}
+		return (1);
 	}
 	return (0);
-}*/
+}
