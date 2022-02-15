@@ -6,7 +6,7 @@
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 21:18:04 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/15 16:11:53 by ael-asri         ###   ########.fr       */
+/*   Updated: 2022/02/15 21:21:04 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,7 +321,7 @@ void	close_pipes(int *pipes, int pipe_num)
 	}
 }
 
-void	creat_pipes(int *pipes, int cmd_num, char **path, int infile, int outfile)
+void	creat_pipes(int *pipes, int cmd_num)
 {
 	int	i;
 
@@ -329,47 +329,39 @@ void	creat_pipes(int *pipes, int cmd_num, char **path, int infile, int outfile)
 	while (i < (cmd_num - 1))
 	{
 		if (pipe(&pipes[2 * i]) < 0)
-			ft_freeing(path, pipes, infile, outfile);
-		//	exit(1);
+		//	ft_freeing(path, pipes, infile, outfile);
+			exit(1);
 		i++;
 	}
 }
 
-void	create_child(char **av, int index, int cmd_num, int *pipes, int infile, int outfile, char **path, char **envp, int pipe_num)
+void	create_child(char **av, int index, int cmd_num, int *pipes, int infile, int outfile, int is_here_doc, char **path, char **envp, int pipe_num)
 {
 	int		pid;
 	char	**cmd;
 	char	*argv;
-printf("hiii\n");
-//printf("index %d\n", index);
-	//		printf("av index %d\n", *pipes[2 * index - 2]);
+
 	pid = fork();
 	if (!pid)
 	{
 		
 		if (index == 0)
 		{
-		//	printf("av index %d\n", infile);
 			dup2(infile, 0);
-		//	printf("av index %d\n", pipes[1]);
 			dup2(pipes[1], 1);
 		}
 		else if (index == (cmd_num - 1))
 		{
 			dup2(pipes[2 * index - 2], 0);
-		//	printf("av index %d\n", pipes[2 * index - 2]);
 			dup2(outfile, 1);
-		//	printf("av index %d\n", outfile);
 		}
 		else
 		{
 			dup2(pipes[2 * index - 2], 0);
-		//	printf("av index %d\n", pipes[2 * index - 2]);
 			dup2(pipes[2 * index + 1], 1);
-		//	printf("av index %d\n", pipes[2 * index + 1]);
 		}
 		close_pipes(pipes, pipe_num);
-		cmd = ft_split(av[index + 2], ' ');
+		cmd = ft_split(av[index + is_here_doc + 2], ' ');
 		if (!cmd)
 			exit(1);
 		argv = get_new_path(path, cmd);
@@ -382,51 +374,55 @@ printf("hiii\n");
 
 int	main(int ac, char **av, char **envp)
 {
-	int		infile;
+	int		infile=0;
 	int		outfile;
 	int		pipe_num;
 	int		cmd_num;
-//	int		i;
 	char 	*line;
 	char	**path;
-//	char	*pids;
-//	int		**fd;
 	int		*pipes;
 	int		index;
+	int		is_here_doc;
 	
 	if (ac >= 5)
 	{
-	//	check_here_doc();
-		line = get_path(envp);
-		if (!line)
-			return (0);
-		path = ft_split(line, ':');
-		if (!path)
-			return (0);
-		infile = open(av[1], O_RDONLY);
+		is_here_doc = 0;
+		if (!ft_strncmp(av[1], "here_doc", 9))
+		{
+			infile = check_here_doc(ac, av);
+			is_here_doc++;
+		}
+		else
+			infile = open(av[1], O_RDONLY);
 		outfile = open(av[ac - 1], O_CREAT | O_RDWR | O_TRUNC, 0000644);
 		if (infile < 0 || outfile < 0)
 		{
 			perror("Error");
 			exit(1);
 		}
-		cmd_num = ac - (3);
+		line = get_path(envp);
+		if (!line)
+			return (0);
+		path = ft_split(line, ':');
+		if (!path)
+			return (0);
+		cmd_num = ac - 3 - is_here_doc;
 		pipe_num = 2 * (cmd_num - 1);
 		pipes = malloc(sizeof(int) * pipe_num);
 		if (!pipes)
 			return (0);
-		creat_pipes(pipes, cmd_num, path, infile, outfile);
-		// for (int h=0; h < 8;h++)
-		// 	printf("pipes %d\n", pipes[h]);
+		printf("cmd num %d\n", cmd_num);
+		printf("pipe num %d\n", pipe_num);
+		creat_pipes(pipes, cmd_num);
 		index = 0;
 		while (index < cmd_num)
 		{
-			create_child(av, index, cmd_num, pipes, infile, outfile, path, envp, pipe_num);
+			printf("av %s\n", av[index +is_here_doc+2]);
+			create_child(av, index, cmd_num, pipes, infile, outfile, is_here_doc, path, envp, pipe_num);
 			index++;
 		}
 		close_pipes(pipes, pipe_num);
 		waitpid(-1, NULL, 0);
-	//	ft_freeing(path, pipes, infile, outfile);
 		return (0);
 	
 	

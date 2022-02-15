@@ -6,7 +6,7 @@
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 15:36:52 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/14 15:38:00 by ael-asri         ###   ########.fr       */
+/*   Updated: 2022/02/15 18:22:56 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*get_chyata(char *line)
 	i = 0;
 	while (line[i] != '\n' && line[i] != '\0')
 		i++;
-	chyata = ft_substr(line, i + 1, ft_strle(line));
+	chyata = ft_substr2(line, i + 1, ft_strle(line));
 	free(line);
 	line = NULL;
 	return (chyata);
@@ -40,7 +40,7 @@ char	*get_line(char	**line)
 	}
 	while (line[0][i] != '\n' && line[0][i] != '\0')
 		i++;
-	temp = ft_substr(*line, 0, i + 1);
+	temp = ft_substr2(*line, 0, i);
 	return (temp);
 }
 
@@ -66,7 +66,7 @@ char	*read_line(int fd, char *line)
 			return (NULL);
 		}
 		buffer[n] = '\0';
-		line = ft_strjoin(line, buffer);
+		line = ft_strjoin2(line, buffer);
 	}
 	free(buffer);
 	return (line);
