@@ -1,39 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   freeing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/06 16:19:03 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/16 18:29:54 by ael-asri         ###   ########.fr       */
+/*   Created: 2022/02/15 15:26:07 by ael-asri          #+#    #+#             */
+/*   Updated: 2022/02/16 15:53:26 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	main(int ac, char **av, char **envp)
+void	free_and_exit(char **s)
 {
-	int		fd[2];
-	pid_t	pid1;
-	pid_t	pid2;
-	char	**path;
+	int	i;
 
-	if (ac == 5)
+	i = 0;
+	while (s[i] != NULL)
 	{
-		if (pipe(fd) < 0)
-			return (0);
-		path = get_path(envp);
-		if (!path)
-			throw_error();
-		pid1 = first_child(av, fd, path, envp);
-		pid2 = second_child(av, fd, path, envp);
-		close(fd[0]);
-		close(fd[1]);
-		waitpid(pid1, NULL, 0);
-		waitpid(pid2, NULL, 0);
+		free(s[i]);
+		i++;
 	}
-	else
-		throw_error();
-	return (0);
+	free(s);
+	exit(1);
 }
+
+/*
+void	ft_freeing(char **path, int *pipes, int infile, int outfile)
+{
+	int	i;
+
+	i =0;
+	close(infile);
+	close(outfile);
+
+	while (path[i])
+	{
+		free(path[i]);
+		i++;
+	}
+	free(pipex->cmd);
+	free(pipex->pipes);
+}
+*/

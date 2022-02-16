@@ -6,13 +6,13 @@
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 17:19:40 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/06 17:27:17 by ael-asri         ###   ########.fr       */
+/*   Updated: 2022/02/16 12:43:45 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	ft_strlen(const char	*s)
+int	ft_strlen(const char *s)
 {
 	int	i;
 
@@ -22,11 +22,11 @@ int	ft_strlen(const char	*s)
 	return (i);
 }
 
-char	*ft_substr(char	*s, int start, int	len)
+char	*ft_substr(char	*s, int start, int len)
 {
-	char			*tab;
-	int	i;
-	int	j;
+	char	*tab;
+	int		i;
+	int		j;
 
 	tab = NULL;
 	if (s == 0)
@@ -93,4 +93,24 @@ char	*ft_strdup(const char *s1)
 	}
 	p[i] = '\0';
 	return (p);
+}
+
+int	ft_strncmp(char *s1, char *s2, int n)
+{
+	int	i;
+
+	if (n <= 0)
+	{
+		return (0);
+	}
+	i = 0;
+	while ((s1[i] || s2[i]) && i < n)
+	{
+		if (s1[i] > s2[i])
+			return (1);
+		else if (s1[i] < s2[i])
+			return (-1);
+		i++;
+	}
+	return (0);
 }

@@ -1,39 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   throw_error.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/06 16:19:03 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/16 18:29:54 by ael-asri         ###   ########.fr       */
+/*   Created: 2022/02/16 11:39:20 by ael-asri          #+#    #+#             */
+/*   Updated: 2022/02/16 17:59:23 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	main(int ac, char **av, char **envp)
+void	throw_error(void)
 {
-	int		fd[2];
-	pid_t	pid1;
-	pid_t	pid2;
-	char	**path;
+	write(2, "Error\n", 6);
+	exit(1);
+}
 
-	if (ac == 5)
+void	free_and_error(char **s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] != NULL)
 	{
-		if (pipe(fd) < 0)
-			return (0);
-		path = get_path(envp);
-		if (!path)
-			throw_error();
-		pid1 = first_child(av, fd, path, envp);
-		pid2 = second_child(av, fd, path, envp);
-		close(fd[0]);
-		close(fd[1]);
-		waitpid(pid1, NULL, 0);
-		waitpid(pid2, NULL, 0);
+		free(s[i]);
+		i++;
 	}
-	else
-		throw_error();
-	return (0);
+	free(s);
+	throw_error();
+}
+
+void	throw_unlink(void)
+{
+	unlink(".temp");
+	write(2, "Error\n", 6);
+	exit(1);
 }

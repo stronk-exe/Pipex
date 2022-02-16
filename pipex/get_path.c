@@ -6,7 +6,7 @@
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 16:18:56 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/06 17:42:19 by ael-asri         ###   ########.fr       */
+/*   Updated: 2022/02/16 18:29:57 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,42 @@ int	check_line(char	*s)
 	while (p[i])
 	{
 		if (s[i] != p[i])
+		{
+			free(p);
 			return (0);
+		}
 		i++;
 	}
+	free(p);
 	return (1);
-	
 }
-char	*get_path(char **line)
+
+char	*get_line_(char **envp)
 {
 	int	i;
 
 	i = 0;
-	while (line[i] != NULL)
+	while (envp[i] != NULL)
 	{
-		if (check_line(line[i]))
-			return &(line[i][5]);
+		if (check_line(envp[i]))
+			return (&(envp[i][5]));
 		i++;
 	}
 	return (NULL);
+}
+
+char	**get_path(char **envp)
+{
+	char	*line;
+	char	**path;
+
+	line = get_line_(envp);
+	if (!line)
+		free_and_exit(&line);
+	path = ft_split(line, ':');
+	if (!path)
+		free_and_exit(path);
+	return (path);
 }
 
 char	*get_new_path(char **path, char **cmd)
@@ -52,7 +70,7 @@ char	*get_new_path(char **path, char **cmd)
 	{
 		t = ft_strjoin(path[i], cmd[0]);
 		if (!t)
-			return (NULL);
+			free_and_exit(&t);
 		if (!access(t, 0))
 			return (t);
 		i++;
