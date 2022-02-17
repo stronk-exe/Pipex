@@ -6,7 +6,7 @@
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 16:19:10 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/16 18:33:39 by ael-asri         ###   ########.fr       */
+/*   Updated: 2022/02/17 14:58:08 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,15 @@ int		first_child(char **av, int *fd, char **path, char **envp);
 int		second_child(char **av, int *fd, char **path, char **envp);
 
 ///// -------------errors
-void	throw_error(void);
+void	pipe_error(void);
 void	free_and_error(char **s);
 void	throw_unlink(void);
+void	p_throwerror(char *s);
+void	ft_putstr_err(char *s);
+void	cmd_error(char *s);
+void	malloc_error(void);
+void	path_error(void);
+void	main_error(void);
 
 ///// -------------freeing
 void	free_and_exit(char **s);

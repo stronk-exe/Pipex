@@ -6,17 +6,23 @@
 #    By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/09 19:33:58 by ael-asri          #+#    #+#              #
-#    Updated: 2022/02/16 15:01:51 by ael-asri         ###   ########.fr        #
+#    Updated: 2022/02/17 14:50:54 by ael-asri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
 
-BNAME = bonus
+BONUS = pipex_b
 
-SRCS = pipex.c get_path.c pipex_utils.c pipex_utils2.c childs.c throw_error.c freeing.c
+SRCS = pipex.c\
+		get_path.c\
+		pipex_utils.c\
+		pipex_utils2.c\
+		childs.c\
+		throw_error.c\
+		freeing.c
 
-BSRCS = pipex_bonus/pipex_bonus.c\
+CSRCS = pipex_bonus/pipex_bonus.c\
 		pipex_bonus/pipex_utils_bonus.c\
 		pipex_bonus/here_doc.c\
 		pipex_bonus/gnl/get_next_line.c\
@@ -29,26 +35,26 @@ BSRCS = pipex_bonus/pipex_bonus.c\
 
 OBJS = $(SRCS:.c=.o)
 
-BOBJS = $(BSRCS:.c=.o)
+COBJS = $(CSRCS:.c=.o)
 
 CFLAGS = -Wall -Wextra -Werror
 
-all : $(NAME)
+all: $(NAME)
 
-bonus : $(BNAME)
+$(NAME): $(OBJS)
+		cc $(CFLAGS) $^ -o $@
+		
+bonus : $(BONUS)
 
-$(NAME) : $(OBJS)
-	cc $(CFLAGS) $^ -o $@
+$(BONUS): $(COBJS)
+		cc $(CFLAGS) $^ -o $@
 
-$(BNAME) : $(BOBJS)
-	cc $(CFLAGS) $^ -o $@
+clean:
+	rm -f $(OBJS) $(COBJS)
 
-clean : 
-	rm -f $(OBJS) $(BOBJS)
+fclean: clean
+		rm -f $(NAME) $(BONUS)
 
-fclean : clean
-	rm -f $(NAME) $(BNAME)
+re: fclean all
 
-re : fclean all
-
-.PHONY : all clean fclean bonus re
+.PHONY: all clean fclean re bonus

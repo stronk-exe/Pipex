@@ -6,7 +6,7 @@
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/12 13:52:46 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/16 18:51:36 by ael-asri         ###   ########.fr       */
+/*   Updated: 2022/02/17 14:58:45 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	creat_pipes(t_pipe *pipex)
 	while (i < (pipex->cmd_num - 1))
 	{
 		if (pipe(&pipex->pipes[2 * i]) < 0)
-			throw_error();
+			malloc_error();
 		i++;
 	}
 }
@@ -44,10 +44,10 @@ int	ft_exec(char **av, t_pipe *pipex, char **envp)
 
 	cmd = ft_split(av[pipex->index + pipex->is_here_doc + 2], ' ');
 	if (!cmd)
-		throw_error();
+		exit(1);
 	argv = get_new_path(pipex->path, cmd);
 	if (!argv)
-		throw_error();
+		cmd_error(cmd[0]);
 	execve(argv, cmd, envp);
 	return (1);
 }
@@ -76,6 +76,6 @@ void	create_child(char **av, t_pipe *pipex, char **envp)
 		}
 		close_pipes(pipex);
 		if (!ft_exec(av, pipex, envp))
-			throw_error();
+			p_throwerror("child error");
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/15 15:26:07 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/16 15:53:26 by ael-asri         ###   ########.fr       */
+/*   Updated: 2022/02/17 14:57:35 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,40 @@ void	free_and_exit(char **s)
 	exit(1);
 }
 
-/*
-void	ft_freeing(char **path, int *pipes, int infile, int outfile)
+void	free_and_error(char **s)
 {
 	int	i;
 
-	i =0;
-	close(infile);
-	close(outfile);
-
-	while (path[i])
+	i = 0;
+	while (s[i] != NULL)
 	{
-		free(path[i]);
+		free(s[i]);
 		i++;
 	}
-	free(pipex->cmd);
-	free(pipex->pipes);
+	free(s);
+	malloc_error();
 }
-*/
+
+void	ft_putstr_err(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] != '\0')
+	{
+		write(2, &s[i], 1);
+		i++;
+	}
+}
+
+void	pipe_error(void)
+{
+	write(2, "pipe error\n", 11);
+	exit(1);
+}
+
+void	p_throwerror(char *s)
+{
+	perror(s);
+	exit(1);
+}

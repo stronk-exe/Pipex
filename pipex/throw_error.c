@@ -6,30 +6,36 @@
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 11:39:20 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/16 17:59:23 by ael-asri         ###   ########.fr       */
+/*   Updated: 2022/02/17 14:57:47 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	throw_error(void)
+void	cmd_error(char *s)
 {
-	write(2, "Error\n", 6);
+	ft_putstr_err("command not found: ");
+	ft_putstr_err(s);
+	write(2, "\n", 1);
 	exit(1);
 }
 
-void	free_and_error(char **s)
+void	main_error(void)
 {
-	int	i;
+	ft_putstr_err("invalid number of arguments\n");
+	exit(1);
+}
 
-	i = 0;
-	while (s[i] != NULL)
-	{
-		free(s[i]);
-		i++;
-	}
-	free(s);
-	throw_error();
+void	malloc_error(void)
+{
+	ft_putstr_err("malloc error\n");
+	exit(1);
+}
+
+void	path_error(void)
+{
+	ft_putstr_err("path error\n");
+	exit(1);
 }
 
 void	throw_unlink(void)

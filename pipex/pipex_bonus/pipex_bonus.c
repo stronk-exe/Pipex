@@ -6,7 +6,7 @@
 /*   By: ael-asri <ael-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 21:18:04 by ael-asri          #+#    #+#             */
-/*   Updated: 2022/02/16 18:54:14 by ael-asri         ###   ########.fr       */
+/*   Updated: 2022/02/17 14:23:22 by ael-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,16 @@ void	infile_outfile(char **av, int ac, t_pipe *pipex)
 	if (!ft_strncmp(av[1], "here_doc", 9))
 	{
 		pipex->infile = check_here_doc(av);
-		pipex->outfile = open(av[ac - 1], O_CREAT | O_RDWR | O_APPEND);
+		pipex->outfile = open(av[ac - 1], O_CREAT | O_RDWR | O_APPEND, 0000644);
 		pipex->is_here_doc++;
 	}
 	else
 	{
-		pipex->infile = open(av[1], O_RDONLY);
-		pipex->outfile = open(av[ac - 1], O_CREAT | O_RDWR | O_TRUNC);
+		pipex->infile = open(av[1], O_RDONLY, 0000644);
+		pipex->outfile = open(av[ac - 1], O_CREAT | O_RDWR | O_TRUNC, 0000644);
 	}
 	if (pipex->infile < 0 || pipex->outfile < 0)
-		throw_error();
+		p_throwerror("open");
 }
 
 void	get_things(int ac, t_pipe *pipex)
@@ -35,7 +35,7 @@ void	get_things(int ac, t_pipe *pipex)
 	pipex->pipe_num = 2 * (pipex->cmd_num - 1);
 	pipex->pipes = malloc(sizeof(int) * pipex->pipe_num);
 	if (!pipex->pipes)
-		throw_error();
+		malloc_error();
 }
 
 int	main(int ac, char **av, char **envp)
@@ -47,7 +47,7 @@ int	main(int ac, char **av, char **envp)
 		infile_outfile(av, ac, &pipex);
 		pipex.path = get_path(envp);
 		if (!pipex.path)
-			throw_error();
+			path_error();
 		get_things(ac, &pipex);
 		creat_pipes(&pipex);
 		pipex.index = 0;
@@ -57,9 +57,10 @@ int	main(int ac, char **av, char **envp)
 			pipex.index++;
 		}
 		close_pipes(&pipex);
-		waitpid(-1, NULL, 0);
+		while (wait(NULL) != -1)
+			;
 	}
 	else
-		throw_error();
+		main_error();
 	return (0);
 }
